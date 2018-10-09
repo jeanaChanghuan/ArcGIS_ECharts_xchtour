@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>ArcGIS大数据ArcGIS JS API版</title>
+    <link rel="stylesheet" href="http://localhost:8090/arcgis_js_api/library/3.24/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+          body {
+            background-color: #F5F3F0;
+            overflow: hidden;
+            font-family: "Trebuchet MS", sans-serif;
+        }
+
+     
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+	<script src="js/main.js"></script>
+	<script>
+	    var dojoConfig = {
+	        parseOnLoad: true,
+	        packages: [{
+	            "name": "base",
+	             "location": "http://localhost:8090/gisbd/echarts/arcgis/base"
+	        }]
+	    };
+</script>
+<script src="http://localhost:8090/arcgis_js_api/library/3.24/init.js"></script>
+<script type="text/javascript">
+     
+    var map;
+    require(
+    ["esri/map", "base/Echarts3Layer","esri/layers/ArcGISDynamicMapServiceLayer",
+     "esri/dijit/Scalebar","esri/dijit/OverviewMap",
+     "dojo/domReady!"],
+     function (Map, Echarts3Layer,ArcGISDynamicMapServiceLayer,Scalebar,OverviewMap) {
+		map = new Map("map", {
+				logo: false,
+				showLabels: true,
+				navigationMode: "classic",
+				sliderStyle: "large",
+				sliderLabels: ["区", "街道", "社区", "网格"]
+			});
+ 		var BaseMap = new ArcGISDynamicMapServiceLayer("http://localhost:6080/arcgis/rest/services/XCH/EzMap_XCH_BaseMap/MapServer",{
+				opacity : 1
+		}); 
+ 		map.addLayer(BaseMap);
+ 		var HideMap = new ArcGISDynamicMapServiceLayer("http://localhost:6080/arcgis/rest/services/XCH/EzMap_XCH_BaseHide/MapServer",{
+				opacity : 1
+		}); 
+ 		map.addLayer(HideMap);
+ 		var RegionLayer = new ArcGISDynamicMapServiceLayer("http://localhost:6080/arcgis/rest/services/XCH/XCHKeyRegion/MapServer",{
+				opacity : 0.7
+		}); 
+		RegionLayer.setVisibleLayers([1]);
+ 		map.addLayer(RegionLayer);
+		new Scalebar({
+			map: map,
+			scalebarUnit: "metric",
+			scalebarStyle: "ruler"          
+		});
+		
+		//.......OVERVIEW.........
+		var overviewMapDijit = new OverviewMap({
+			map: map,
+			attachTo: "bottom-right",
+			width: 300,
+			height: 200,
+			right: 20,
+			visible: false
+		});
+		overviewMapDijit.startup();
+        map.on('load', function () {
+            var overlay = new Echarts3Layer(map, echarts);
+            var chartsContainer = overlay.getEchartsContainer();
+            var myChart = overlay.initECharts(chartsContainer);
+		    var geoCoordMap={
+			    '马甸桥区域': [
+			        502090.817602382,
+			        311224.06436746
+			    ],
+			    '太仆寺街社区': [
+			        501645.408083132,
+			        304900.258875514
+			    ],
+			    '大栅栏(大监测范围)': [
+			        502897.764106459,
+			        303073.238307628
+			    ],
+			    '金融街北区': [
+			        500292.59908597,
+			        305720.527841865
+			    ],
+			    '钟声社区': [
+			        501803.462692207,
+			        304615.345924493
+			    ],
+			    '菜市口': [
+			        501438.729235124,
+			        302262.176481529
+			    ],
+			    '马连道茶叶街': [
+			        497454.568157737,
+			        301818.524993724
+			    ],
+			    '金融街南区': [
+			        500240.426500262,
+			        304791.322752334
+			    ],
+			    '天桥街道': [
+			        503328.143731427,
+			        302184.796774538
+			    ],
+			    '动物园批发市场': [
+			        498125.989989119,
+			        307779.710833714
+			    ],
+			    '六部口社区': [
+			        501813.292731368,
+			        304245.956280798
+			    ],
+			    '西单南区': [
+			        501373.994428116,
+			        304622.600980887
+			    ],
+			    '西交民巷社区': [
+			        502883.150443014,
+			        303956.649435503
+			    ],
+			    '府右街南社区': [
+			        501693.345484369,
+			        305132.424003698
+			    ],
+			    '西单北区': [
+			        501417.065552835,
+			        305056.097402549
+			    ],
+			    '北新华街社区': [
+			        502606.648908176,
+			        304237.368429035
+			    ],
+			    '陶然亭公园': [
+			        502126.88494331,
+			        300780.445519059
+			    ],
+			    '南北长街社区': [
+			        502582.925899872,
+			        305271.252146975
+			    ],
+			    '什刹海地区': [
+			        502407.655677721,
+			        308260.62420677
+			    ],
+			    '南锣鼓巷': [
+			        503932.901213999,
+			        307752.038533986
+			    ],
+			    '宣武医院门口': [
+			        500452.738150508,
+			        302732.695663386
+			    ],
+			    '未英社区': [
+			        501622.40601296,
+			        303838.489998768
+			    ],
+			    '和平门社区': [
+			        502054.685181087,
+			        303848.04112052
+			    ],
+			    '大栅栏(小监测范围）': [
+			        503502.930444253,
+			        303141.075151493
+			    ],
+			    '义达里社区': [
+			        501542.604056387,
+			        305869.393915565
+			    ],
+			    '西单北社区': [
+			        501561.803259676,
+			        305451.32950693
+			    ],
+			    '荣丰社区': [
+			        498223.346044756,
+			        303026.528590547
+			    ],
+			    '大观园': [
+			        499902.377238111,
+			        300459.752995776
+			    ],
+			    '北京北站地区': [
+			        499650.661151576,
+			        308644.780304815
+			    ],
+			    '光明社区': [
+			        501962.732078818,
+			        305748.166337708
+			    ],
+			    '天桥艺术中心': [
+			        503479.982951349,
+			        301644.167766092
+			    ],
+			    '德胜门箭楼及德胜门西大街': [
+			        501754.584732077,
+			        309062.874876176
+			    ],
+			    '人定湖公园': [
+			        502428.790221862,
+			        309993.247758142
+			    ],
+			    '西黄城根南街社区': [
+			        501896.212936692,
+			        305436.16733153
+			    ],
+			    '西什库教堂': [
+			        501848.497991744,
+			        306395.861639764
+			    ],
+			    '动物园交通枢纽': [
+			        498503.970262174,
+			        307813.053896092
+			    ],
+			    '广安门中医院门口': [
+			        499582.501808559,
+			        302583.037755532
+			    ],
+			    '王府井大街': [
+			        504646.499656818,
+			        304600.73100947
+			    ],
+			    '报国寺门口及周边': [
+			        500210.636045439,
+			        302643.321517702
+			    ],
+			    '菜百': [
+			        500193.319009851,
+			        302390.452313085
+			    ],
+			    '白云观': [
+			        498865.005314828,
+			        303754.918691564
+			    ],
+			    '国家信访局': [
+			        499470.677157601,
+			        305110.792811485
+			    ],
+			    '礼拜寺': [
+			        500642.327796796,
+			        302024.328934591
+			    ],
+			    '红莲中里社区': [
+			        497661.852092413,
+			        301678.518388051
+			    ],
+			    '宣武门天主教堂': [
+			        501537.931792339,
+			        303694.056728742
+			    ],
+			    '西直门教堂': [
+			        500758.616661221,
+			        308076.662572844
+			    ],
+			    '缸瓦市教堂': [
+			        501371.591356956,
+			        305989.31481215
+			    ],
+			    };
+			var data=[
+			    {
+			        name: '马甸桥区域',
+			        value: 241717
+			    },
+			    {
+			        name: '太仆寺街社区',
+			        value: 170552
+			    },
+			    {
+			        name: '大栅栏(大监测范围)',
+			        value: 162007
+			    },
+			    {
+			        name: '金融街北区',
+			        value: 111008
+			    },
+			    {
+			        name: '钟声社区',
+			        value: 91844
+			    },
+			    {
+			        name: '菜市口',
+			        value: 85937
+			    },
+			    {
+			        name: '马连道茶叶街',
+			        value: 82423
+			    },
+			    {
+			        name: '金融街南区',
+			        value: 67872
+			    },
+			    {
+			        name: '天桥街道',
+			        value: 43747
+			    },
+			    {
+			        name: '动物园批发市场',
+			        value: 42634
+			    },
+			    {
+			        name: '六部口社区',
+			        value: 35222
+			    },
+			    {
+			        name: '西单南区',
+			        value: 31475
+			    },
+			    {
+			        name: '西交民巷社区',
+			        value: 31379
+			    },
+			    {
+			        name: '府右街南社区',
+			        value: 30810
+			    },
+			    {
+			        name: '西单北区',
+			        value: 30431
+			    },
+			    {
+			        name: '北新华街社区',
+			        value: 30307
+			    },
+			    {
+			        name: '陶然亭公园',
+			        value: 25111
+			    },
+			    {
+			        name: '南北长街社区',
+			        value: 22202
+			    },
+			    {
+			        name: '什刹海地区',
+			        value: 20295
+			    },
+			    {
+			        name: '南锣鼓巷',
+			        value: 18581
+			    },
+			    {
+			        name: '宣武医院门口',
+			        value: 17702
+			    },
+			    {
+			        name: '未英社区',
+			        value: 15560
+			    },
+			    {
+			        name: '和平门社区',
+			        value: 14649
+			    },
+			    {
+			        name: '大栅栏(小监测范围）',
+			        value: 11719
+			    },
+			    {
+			        name: '义达里社区',
+			        value: 10451
+			    },
+			    {
+			        name: '西单北社区',
+			        value: 9972
+			    },
+			    {
+			        name: '荣丰社区',
+			        value: 9387
+			    },
+			    {
+			        name: '大观园',
+			        value: 7890
+			    },
+			    {
+			        name: '北京北站地区',
+			        value: 6933
+			    },
+			    {
+			        name: '光明社区',
+			        value: 6240
+			    },
+			    {
+			        name: '天桥艺术中心',
+			        value: 5289
+			    },
+			    {
+			        name: '德胜门箭楼及德胜门西大街',
+			        value: 4573
+			    },
+			    {
+			        name: '人定湖公园',
+			        value: 4273
+			    },
+			    {
+			        name: '西黄城根南街社区',
+			        value: 3477
+			    },
+			    {
+			        name: '西什库教堂',
+			        value: 3104
+			    },
+			    {
+			        name: '动物园交通枢纽',
+			        value: 2991
+			    },
+			    {
+			        name: '广安门中医院门口',
+			        value: 2277
+			    },
+			    {
+			        name: '王府井大街',
+			        value: 1948
+			    },
+			    {
+			        name: '报国寺门口及周边',
+			        value: 1842
+			    },
+			    {
+			        name: '菜百',
+			        value: 1706
+			    },
+			    {
+			        name: '白云观',
+			        value: 1670
+			    },
+			    {
+			        name: '国家信访局',
+			        value: 1401
+			    },
+			    {
+			        name: '礼拜寺',
+			        value: 1267
+			    },
+			    {
+			        name: '红莲中里社区',
+			        value: 947
+			    },
+			    {
+			        name: '宣武门天主教堂',
+			        value: 862
+			    },
+			    {
+			        name: '西直门教堂',
+			        value: 226
+			    },
+			    {
+			        name: '缸瓦市教堂',
+			        value: 93
+			    },    
+			];
+
+		    var max = 241717,
+		        min = 93; 
+		    var maxSize4Pin = 100,
+		        minSize4Pin = 20;
+		   //构建数据，将地名、经纬度和人口数据整合到一个集合中
+		    var convertData = function(data) {
+		        var res = [];
+		        for (var i = 0; i < data.length; i++) {
+		            var geoCoord = geoCoordMap[data[i].name];
+		            if (geoCoord) {
+		                res.push({
+		                    name: data[i].name,
+		                    value: geoCoord.concat(data[i].value)
+		                });
+		            }
+		        }
+		        return res;
+		    };
+		 var yData = [];
+		data.sort(function(o1, o2) {
+		    if (isNaN(o1.value) || o1.value == null) return -1;
+		    if (isNaN(o2.value) || o2.value == null) return 1;
+		    return o1.value - o2.value;
+		});
+		
+		for (var i = data.length-1; i>-1; i--) {
+		    yData.push(data[i].name);
+		}
+		
+		    option = {
+		        title: {
+		            text: '北京市-旅游大数据',
+		            subtext: '',
+		            x: 'center',
+		            textStyle: {
+		                color: '#000'
+		            }
+		        },
+		        //构建提示框显示内容
+		        tooltip: {
+		            trigger: 'item',
+		            formatter: function(params) {
+		                if (typeof(params.value)[2] == "undefined") {
+		                    return params.name + ' : 旅游人口' + params.value;
+		                } else {
+		                    return params.name + ' : 旅游人口' + params.value[2];
+		                }
+		            }
+		        },
+		        //地图范围分段以及图例
+			    grid: {
+			        right: 10,
+			        top: 80,
+			        bottom: 30,
+			        width: '20%'
+			    },
+			    xAxis: {
+			        type: 'value',
+			        scale: true,
+			        position: 'top',
+			        splitNumber: 1,
+			        boundaryGap: false,
+			        splitLine: {
+			            show: false
+			        },
+			        axisLine: {
+			            show: false
+			        },
+			        axisTick: {
+			            show: false
+			        },
+			        axisLabel: {
+			            margin: 2,
+			            textStyle: {
+			                color: '#aaa'
+			            }
+			        }
+			    },
+			    yAxis: {
+			        type: 'category',
+			        nameGap: 16,
+			        axisLine: {
+			            show: false,
+			            lineStyle: {
+			                color: '#ddd'
+			            }
+			        },
+			        axisTick: {
+			            show: false,
+			            lineStyle: {
+			                color: '#ddd'
+			            }
+			        },
+			        axisLabel: {
+			            interval: 0,
+			            textStyle: {
+			                color: '#999'
+			            }
+			        },
+			        data: yData
+			    },
+		        //地理坐标组件
+		        geo: {
+		            show: true, //是否显示地理坐标系组件。
+		            map: 'tianjin',
+		            label: {    //图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等
+		                normal: {
+		                    show: false   //是否显示标签。
+		                },
+		                emphasis: {   //图块高亮状态
+		                    show: true,    
+		                }
+		            },
+		            roam: false,//是否开启鼠标缩放和平移漫游
+		            itemStyle: {
+		                normal: {
+		                    areaColor: '#031525',  //地图区域的颜色。
+		                    borderColor: '#3B5077', //图形的描边颜色
+		                }, 
+		                emphasis: {               //设置地块高亮的颜色
+		                    areaColor: '#2B91B7',
+		                }
+		            }
+		        },
+		        series: [
+		        	
+		        	  /**在地图上构建散点图**/
+	                 {
+		                name: 'tianjing',
+		                type: 'scatter',          //散点图默认值
+		                coordinateSystem: 'geo',  //该系列使用的坐标系
+		                data: convertData(data),  //使用的构建后的数据
+		                symbolSize: function(val) { //散点图的大小
+		                    return val[2] / 10000;
+		                },
+		                label: {                 //散点图标签
+		                    normal: {
+		                        formatter: '{b}',
+		                        position: 'right',
+		                        show: true
+		                    },
+		                    emphasis: {
+		                        show: true
+		                    }
+		                },
+		                itemStyle: {
+		                    normal: {
+		                        color: '#00467F'
+		                    }
+		                }
+		            },
+		            {
+		                type: 'map',
+		                map: 'tianjin',
+		                geoIndex: 0,
+		                aspectScale: 0.75, //scale 地图的长宽比。
+		                showLegendSymbol: false, // 存在legend时显示
+		                label: {      //图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等
+		                    normal: {
+		                        show: false  //是否显示标签。
+		                    },
+		                    emphasis: {    //高亮状态下的多边形和标签样式。
+		                    
+		                        show: false,
+		                        textStyle: {
+		                            color: '#fff'
+		                        }
+		                    }
+		                },
+		                roam: false, //是否开启鼠标缩放和平移漫游
+		                itemStyle: {
+		                    normal: {
+		                        areaColor: '#031525',  //地图区域的颜色。
+		                        borderColor: '#3B5077',
+		                    },
+		                    emphasis: {
+		                        areaColor: '#2B91B7'  //地图区域高亮颜色
+		                    }
+		                },
+		                animation: false,   //是否显示动画
+		                data: data   //指定图系列中的数据内容
+		            }, 
+		            {
+			        name: 'barSer',
+			        type: 'bar',
+			        roam: false,
+			        visualMap: false,
+			        zlevel: 2,
+			        barMaxWidth: 20,
+			        itemStyle: {
+			            normal: {
+			                color: '#40a9ed'
+			            },
+			            emphasis: {
+			                color: "#3596c0"
+			            }
+			        },
+			        label: {
+			            normal: {
+			                show: false,
+			                position: 'right',
+			                offset: [0, 10]
+			            },
+			            emphasis: {
+			                show: true,
+			                position: 'right',
+			                offset: [10, 0]
+			            }
+			        },
+			        data: data
+			    },
+		            {   /**构建气泡点*/
+		                name: '点',
+		                type: 'scatter',
+		                coordinateSystem: 'geo',
+		                symbol: 'pin',
+		                name:'总人口数',
+		                symbolSize: function(val) {   //气泡大小
+		                    var a = (maxSize4Pin - minSize4Pin) / (max - min);
+		                    var b = minSize4Pin - a * min;
+		                    b = maxSize4Pin - a * max;
+		                    return a * val[2] + b;
+		                },
+		                label: {              //气泡标签
+		                    normal: {
+		                        show: true,
+		                        textStyle: {
+		                            color: '#000',
+		                            fontSize: 9,
+		                        }
+		                    }
+		                },
+		                itemStyle: {
+		                    normal: {
+		                        color: '#F62157', //气泡颜色
+		                    }
+		                },
+		                zlevel: 6,
+		                data: convertData(data)  //气泡绑定数据集
+		            },
+		            {
+		                name: 'Top 5',
+		                type: 'effectScatter',  //构建有波纹的散点
+		                coordinateSystem: 'geo',   //该系列使用的坐标系
+		                data: convertData(data.sort(function(a, b) {
+		                    return b.value - a.value;
+		                }).slice(0, 5)),
+		                symbolSize: function(val) {     
+		                    return val[2] / 10000;       //标记的大小，可以设置成诸如 10 这样单一的数字，也可以用数组分开表示宽和高，例如 [20, 10] 表示标记宽为20，高为10
+		                },
+		                showEffectOn: 'render',      // default: 'render' ]配置何时显示特效。'render' 绘制完成后显示特效。'emphasis' 高亮（hover）的时候显示特效
+	
+		                rippleEffect: {             //波纹涟漪特效相关配置
+		                    brushType: 'stroke'     //波纹的绘制方式，可选 'stroke' 和 'fill'。
+		                },
+		                hoverAnimation: true,
+		                label: {                  //图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等，
+		                    normal: {
+		                        formatter: '{b}',
+		                        position: 'right',
+		                        show: true
+		                    }
+		                },
+		                itemStyle: {         //图形样式
+		                    normal: {
+		                        color: '#05C3F9',  //图形的颜色
+		                        shadowBlur: 10,    //图形阴影的模糊大小
+		                        shadowColor: '#05C3F9' //阴影颜色。支持的格式同color
+		                    }
+		                },
+		                zlevel: 1    //线图所有图形的 zlevel 值。[ default: 0 ]zlevel 大的 Canvas 会放在 zlevel 小的 Canvas 的上面
+		            },
+		
+		        ]
+		    };
+            // 使用刚指定的配置项和数据显示图表。
+            overlay.setOption(option);
+        });
+    });
+</script>
+</body>
+
+</html>
